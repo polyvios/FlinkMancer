@@ -13,21 +13,22 @@ import java.util.Set;
  * @author Hergal
  */
 public class Node {
+
     private Long id;
-    private ArrayList<Set<Long>> sets;
+    public ArrayList<Set<Long>> sets;
 
     //Constructors
-    Node() {
+    public Node() {
         this.id = null;
         this.sets = new ArrayList<>();
     }
 
-    Node(Long id) {
+    public Node(Long id) {
         this.id = id;
         this.sets = new ArrayList<>();
     }
 
-    Node(Long id, ArrayList<Set<Long>> sets) {
+    public Node(Long id, ArrayList<Set<Long>> sets) {
         this.id = id;
         this.sets = sets;
     }
@@ -41,11 +42,11 @@ public class Node {
         this.sets = sets;
     }
 
-    public Long getID() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setID(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
     //Specific Sets
@@ -64,8 +65,9 @@ public class Node {
         al.addAll(sets.get(i));
         return al;
     }
+
     @Override
     public String toString() {
-        return "vertex id: " + this.getID() + " yey ";
+        return this.getId().toString();
     }
 }
