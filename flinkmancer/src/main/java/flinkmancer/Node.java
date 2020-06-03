@@ -55,6 +55,29 @@ public class Node {
     public void addSet(Set<Long> s) {
         this.sets.add(s);
     }
+    public int getSetsCount() {
+        return sets.size();
+    }
+
+    public int differentIn() {
+        int count = 0;
+        for (int i = 0; i < this.getSetsCount(); i = i + 2) {
+            if (this.getSet(i).size() > 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int diffrenetOut() {
+        int count = 0;
+        for (int i = 1; i < this.getSetsCount(); i = i + 2) {
+            if (this.getSet(i).size() > 0) {
+                count++;
+            }
+        }
+        return count;
+    }
 
     public Set<Long> getSet(int i) {
         return this.sets.get(i);

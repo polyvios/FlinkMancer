@@ -16,7 +16,6 @@ import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.api.java.tuple.Tuple8;
-import org.apache.flink.api.java.tuple.Tuple9;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.table.api.java.BatchTableEnvironment;
@@ -130,36 +129,10 @@ public class Flinkmancer {
         int layer = 1; //Follow layer is 1 , Reply is 2, Retweet is 3, Quote is 4
 
         // TO DO!!!  , return Tuple with ids, no reason to return nodes.
-        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t1 = Vpairs.flatMap(new Features.T1(layer));
-        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t2 = Vpairs.flatMap(new Features.T2(layer));
-        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t3 = Vpairs.flatMap(new Features.T3(layer));
-        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t4 = Vpairs.flatMap(new Features.T4(layer));
-        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t5 = Vpairs.flatMap(new Features.T5(layer));
-        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t6 = Vpairs.flatMap(new Features.T6(layer));
-        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t7 = Vpairs.flatMap(new Features.T7(layer));
-        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t8 = Vpairs.flatMap(new Features.T8(layer));
-        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t9 = Vpairs.flatMap(new Features.T9(layer));
-        DataSet<Tuple2<Tuple2<Long, Long>, Tuple9<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>>> t12
-                = t1.join(t2).where("f0").equalTo("f0").projectFirst(0, 1).projectSecond(1)
-                        .join(t3).where("f0").equalTo("f0").projectFirst(0, 1, 2).projectSecond(1)
-                        .join(t4).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3).projectSecond(1)
-                        .join(t5).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3, 4).projectSecond(1)
-                        .join(t6).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3, 4, 5).projectSecond(1)
-                        .join(t7).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3, 4, 5, 6).projectSecond(1)
-                        .join(t8).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3, 4, 5, 6, 7).projectSecond(1)
-                        .join(t9).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3, 4, 5, 6, 7, 8).projectSecond(1);
-        //t12.print();
-
-        t12.writeAsCsv("src/data/results/save.csv", "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+        DataSet<Tuple2<String, String>> features = Vpairs.flatMap(new Features.Feat());
+        features.writeAsCsv("src/data/results/features.csv", "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         env.execute();
-        /*
-        Table mytable = fbTableEnv.fromDataSet(t1, "node1, t1");
-        Table mytable2 = fbTableEnv.fromDataSet(t2, "node2, t2");
-        Table join1 = mytable.join(mytable2).where("node1 = node2").select("t1");
-        join1.printSchema();
-        DataSet<Integer> d = fbTableEnv.toDataSet(join1, Integer.class);
-        d.print();
-        */
+
     }
 
     public static class SelectId implements KeySelector<Node, String> {
@@ -348,3 +321,36 @@ public class Flinkmancer {
     }
 
 }
+
+/*
+        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t1 = Vpairs.flatMap(new Features.T1(layer));
+        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t2 = Vpairs.flatMap(new Features.T2(layer));
+        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t3 = Vpairs.flatMap(new Features.T3(layer));
+        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t4 = Vpairs.flatMap(new Features.T4(layer));
+        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t5 = Vpairs.flatMap(new Features.T5(layer));
+        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t6 = Vpairs.flatMap(new Features.T6(layer));
+        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t7 = Vpairs.flatMap(new Features.T7(layer));
+        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t8 = Vpairs.flatMap(new Features.T8(layer));
+        DataSet<Tuple2<Tuple2<Long, Long>, Integer>> t9 = Vpairs.flatMap(new Features.T9(layer));
+        DataSet<Tuple2<Tuple2<Long, Long>, Tuple9<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>>> t12
+                = t1.join(t2).where("f0").equalTo("f0").projectFirst(0, 1).projectSecond(1)
+                        .join(t3).where("f0").equalTo("f0").projectFirst(0, 1, 2).projectSecond(1)
+                        .join(t4).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3).projectSecond(1)
+                        .join(t5).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3, 4).projectSecond(1)
+                        .join(t6).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3, 4, 5).projectSecond(1)
+                        .join(t7).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3, 4, 5, 6).projectSecond(1)
+                        .join(t8).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3, 4, 5, 6, 7).projectSecond(1)
+                        .join(t9).where("f0").equalTo("f0").projectFirst(0, 1, 2, 3, 4, 5, 6, 7, 8).projectSecond(1);
+        //t12.print();
+
+        t12.writeAsCsv("src/data/results/save.csv", "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+        env.execute();
+ */
+ /*
+        Table mytable = fbTableEnv.fromDataSet(t1, "node1, t1");
+        Table mytable2 = fbTableEnv.fromDataSet(t2, "node2, t2");
+        Table join1 = mytable.join(mytable2).where("node1 = node2").select("t1");
+        join1.printSchema();
+        DataSet<Integer> d = fbTableEnv.toDataSet(join1, Integer.class);
+        d.print();
+        */
