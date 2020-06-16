@@ -39,7 +39,7 @@ public class Flinkmancer {
 
 
 
-        env.setParallelism(6); // xwris den trexei logo heap size p moirazontai ta task. dn exw to flink-conf.yaml
+        env.setParallelism(32); // xwris den trexei logo heap size p moirazontai ta task. dn exw to flink-conf.yaml
         
         // System.out.println(configuration.toString());
         String followPath = "src/data/test2/followers/";
