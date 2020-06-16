@@ -18,7 +18,6 @@ import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.api.java.tuple.Tuple8;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
-import org.apache.flink.table.api.java.BatchTableEnvironment;
 import org.apache.flink.util.Collector;
 
 /**
@@ -33,16 +32,16 @@ public class Flinkmancer {
     public static void main(String[] args) throws Exception {
         //BasicConfigurator.configure(); uncomment gia log4j
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
+        Configuration configuration = env.getConfiguration();
+        // env.getConfig().setParallelism(4);
+        configuration.setString("taskmanager.numberOfTaskSlots", "1");
         // create type info
 
 
 
-        BatchTableEnvironment fbTableEnv = BatchTableEnvironment.create(env);
-        //env.setParallelism(4); // xwris den trexei logo heap size p moirazontai ta task. dn exw to flink-conf.yaml
-        Configuration configuration = env.getConfiguration();
-        env.getConfig().setParallelism(4);
-        configuration.setString("taskmanager.numberOfTaskSlots", "2");
-        System.out.println(configuration.toString());
+        env.setParallelism(6); // xwris den trexei logo heap size p moirazontai ta task. dn exw to flink-conf.yaml
+        
+        // System.out.println(configuration.toString());
         String followPath = "src/data/test2/followers/";
         String replyPath = "src/data/test2/reply/";
         String retweetPath = "src/data/test2/retweet/";
@@ -56,13 +55,13 @@ public class Flinkmancer {
 
         DataSet<Tuple2<Long, Set<Long>>> inc_follow = followSet.groupBy(1).reduceGroup(new GroupReduceSecond());
         DataSet<Tuple2<Long, Set<Long>>> out_follow = followSet.groupBy(0).reduceGroup(new GroupReduceFirst());
-        System.out.println("Incoming follow set");
-        inc_follow.print();
-        System.out.println("Outgoing follow set");
-        out_follow.print();
-        System.out.println("All follow set");
+        //System.out.println("Incoming follow set");
+        //inc_follow.print();
+        // System.out.println("Outgoing follow set");
+        //out_follow.print();
+        // System.out.println("All follow set");
         DataSet<Tuple2<Long, Tuple2<Set<Long>, Set<Long>>>> all_follow = inc_follow.fullOuterJoin(out_follow).where("f0").equalTo("f0").with(new OuterJoin());
-        all_follow.print();
+        //all_follow.print();
 
 
         //Read reply set
@@ -73,13 +72,13 @@ public class Flinkmancer {
 
         DataSet<Tuple2<Long, Set<Long>>> inc_reply = replySet.groupBy(1).reduceGroup(new GroupReduceSecond());
         DataSet<Tuple2<Long, Set<Long>>> out_reply = replySet.groupBy(0).reduceGroup(new GroupReduceFirst());
-        System.out.println("Incoming reply set");
+        // System.out.println("Incoming reply set");
         //inc_reply.print();
-        System.out.println("Outgoing reply set");
+       // System.out.println("Outgoing reply set");
         //out_reply.print();
-        System.out.println("All reply set");
+        //System.out.println("All reply set");
         DataSet<Tuple2<Long, Tuple2<Set<Long>, Set<Long>>>> all_reply = inc_reply.fullOuterJoin(out_reply).where("f0").equalTo("f0").with(new OuterJoin());
-        all_reply.print();
+        //all_reply.print();
 
         //Read retweet set
         DataSet<Tuple2<Long, Long>> retweetSet = env.readCsvFile(retweetPath)
@@ -89,13 +88,13 @@ public class Flinkmancer {
 
         DataSet<Tuple2<Long, Set<Long>>> inc_retweet = retweetSet.groupBy(1).reduceGroup(new GroupReduceSecond());
         DataSet<Tuple2<Long, Set<Long>>> out_retweet = retweetSet.groupBy(0).reduceGroup(new GroupReduceFirst());
-        System.out.println("Incoming retweet set");
+        //System.out.println("Incoming retweet set");
         //inc_retweet.print();
-        System.out.println("Outgoing retweet set");
+       // System.out.println("Outgoing retweet set");
         //out_retweet.print();
-        System.out.println("All retweet set");
+        //System.out.println("All retweet set");
         DataSet<Tuple2<Long, Tuple2<Set<Long>, Set<Long>>>> all_retweet = inc_retweet.fullOuterJoin(out_retweet).where("f0").equalTo("f0").with(new OuterJoin());
-        all_retweet.print();
+        //all_retweet.print();
 
         //Read quote set
         DataSet<Tuple2<Long, Long>> quoteSet = env.readCsvFile(quotePath)
@@ -105,13 +104,13 @@ public class Flinkmancer {
 
         DataSet<Tuple2<Long, Set<Long>>> inc_quote = quoteSet.groupBy(1).reduceGroup(new GroupReduceSecond());
         DataSet<Tuple2<Long, Set<Long>>> out_quote = quoteSet.groupBy(0).reduceGroup(new GroupReduceFirst());
-        System.out.println("Incoming quote set");
+        //System.out.println("Incoming quote set");
         //inc_quote.print();
-        System.out.println("Outgoing quote set");
+        //System.out.println("Outgoing quote set");
         //out_quote.print();
-        System.out.println("All quote set");
+       // System.out.println("All quote set");
         DataSet<Tuple2<Long, Tuple2<Set<Long>, Set<Long>>>> all_quote = inc_quote.fullOuterJoin(out_quote).where("f0").equalTo("f0").with(new OuterJoin());
-        all_quote.print();
+        //all_quote.print();
         DataSet<Tuple2<Long, Tuple4<Set<Long>, Set<Long>, Set<Long>, Set<Long>>>> followXreply = all_follow.fullOuterJoin(all_reply).where("f0").equalTo("f0").with(new OuterJoinTuple4());
         //followXreply.print();
 
@@ -119,8 +118,8 @@ public class Flinkmancer {
         //retweetXquote.print();
 
         DataSet<Tuple2<Long, Tuple8<Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>>>> all = followXreply.fullOuterJoin(retweetXquote).where("f0").equalTo("f0").with(new OuterJoinTuple8());
-        System.out.println("All sets");
-        all.print();
+        //System.out.println("All sets");
+        //all.print();
         DataSet<Node> vertices = all.groupBy(0).reduceGroup(new NodeCreator());
         //vertices.print();
         //crossed vertices
@@ -130,7 +129,7 @@ public class Flinkmancer {
 
         // TO DO!!!  , return Tuple with ids, no reason to return nodes.
         DataSet<Tuple2<String, String>> features = Vpairs.flatMap(new Features.Feat());
-        features.writeAsCsv("src/data/results/features.csv", "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+        features.writeAsCsv("src/data/results/BIGfeatures.csv", "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
         env.execute();
 
     }
