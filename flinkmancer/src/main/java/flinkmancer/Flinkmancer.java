@@ -16,6 +16,7 @@ import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.api.java.tuple.Tuple8;
+import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.util.Collector;
@@ -34,12 +35,21 @@ public class Flinkmancer {
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
         Configuration configuration = env.getConfiguration();
         // env.getConfig().setParallelism(4);
-        configuration.setString("taskmanager.numberOfTaskSlots", "1");
+        //configuration.setString("taskmanager.numberOfTaskSlots", "1");
         // create type info
+        final int cores;
+        try {
+            final ParameterTool params = ParameterTool.fromArgs(args);
+            cores = params.getInt("cores");
+            env.setParallelism(cores); // xwris den trexei logo heap size p moirazontai ta task. dn exw to flink-conf.yaml
+        } catch (Exception e) {
+            System.err.println("No cores specified. Please run 'flinkmancer*.jar "
+                    + "--cores <cores>', where cores is the number of parallelism ");
+            return;
+        }
 
 
 
-        env.setParallelism(32); // xwris den trexei logo heap size p moirazontai ta task. dn exw to flink-conf.yaml
         
         // System.out.println(configuration.toString());
         String followPath = "src/data/test2/followers/";
