@@ -38,13 +38,16 @@ public class Flinkmancer {
         //configuration.setString("taskmanager.numberOfTaskSlots", "1");
         // create type info
         final int cores;
+        final String path;
         try {
             final ParameterTool params = ParameterTool.fromArgs(args);
             cores = params.getInt("cores");
+            path = params.get("path");
             env.setParallelism(cores); // xwris den trexei logo heap size p moirazontai ta task. dn exw to flink-conf.yaml
         } catch (Exception e) {
             System.err.println("No cores specified. Please run 'flinkmancer*.jar "
-                    + "--cores <cores>', where cores is the number of parallelism ");
+                    + "--cores <cores> --path <path> ', where cores is the number of parallelism "
+                    + "and path is path/to/file/ ");
             return;
         }
 
@@ -52,10 +55,10 @@ public class Flinkmancer {
 
         
         // System.out.println(configuration.toString());
-        String followPath = "src/data/test2/followers/";
-        String replyPath = "src/data/test2/reply/";
-        String retweetPath = "src/data/test2/retweet/";
-        String quotePath = "src/data/test2/quote/";
+        String followPath = path + "followers/";
+        String replyPath = path + "reply/";
+        String retweetPath = path + "retweet/";
+        String quotePath = path + "quote/";
 
         //Read follow dataset
         DataSet<Tuple2<Long, Long>> followSet = env.readCsvFile(followPath)
