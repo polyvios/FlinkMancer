@@ -142,7 +142,7 @@ public class Flinkmancer {
 
         // TO DO!!!  , return Tuple with ids, no reason to return nodes.
         DataSet<Tuple2<String, String>> features = Vpairs.flatMap(new Features.Feat());
-        features.writeAsCsv("src/data/results/BIGfeatures.csv", "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(1);
+        features.writeAsCsv("src/data/results/BIGfeatures.csv", "\n", ",", FileSystem.WriteMode.OVERWRITE);
         env.execute();
 
     }
