@@ -25,24 +25,34 @@ public class Features {
         @Override
         public void flatMap(Tuple2<Node, Node> in, Collector<Tuple2<String, String>> out) {
             Integer[] feats;
-            feats = new Integer[100];
+
             int incoming = 0;
             int outgoing = 1;
             int index = 0;
             int numOfSets = in.f0.getSetsCount();
             int temp;
             int layers = (int) numOfSets / 2;
+            int arraySize = (2) + (numOfSets) + (9 * layers) + (9 * ((layers * (layers - 1)) / 2));
             Node u = in.f0;
             Node v = in.f1;
+
+            feats = new Integer[arraySize];
+
             //Features 1-10
-            feats[index++] = u.getSet(1).size();
+            for (int i = 1; i < numOfSets; i = i + 2) {
+                feats[index++] = u.getSet(i).size();
+            }
+            for (int i = 0; i < numOfSets; i = i + 2) {
+                feats[index++] = u.getSet(i).size();
+            }
+            /*      feats[index++] = u.getSet(1).size();
             feats[index++] = u.getSet(3).size();
             feats[index++] = u.getSet(5).size();
             feats[index++] = u.getSet(7).size();
             feats[index++] = v.getSet(0).size();
             feats[index++] = v.getSet(2).size();
             feats[index++] = v.getSet(4).size();
-            feats[index++] = v.getSet(6).size();
+            feats[index++] = v.getSet(6).size(); */
             feats[index++] = u.diffrenetOut();
             feats[index++] = v.differentIn();
 
@@ -110,7 +120,7 @@ public class Features {
             //Features 47-100 (P)
             Combinations c = new Combinations(layers, 2);
             Iterator<int[]> k = c.iterator();
-            String test = "";
+
             ArrayList<Tuple2<Integer, Integer>> PPairs = new ArrayList<>();
             //pairs created [1, 2], [1, 3], [2, 3], [1, 4], [2, 4], [3, 4]
             while (k.hasNext()) {

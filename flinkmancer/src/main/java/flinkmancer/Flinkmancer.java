@@ -12,7 +12,6 @@ import org.apache.flink.api.common.functions.FlatJoinFunction;
 import org.apache.flink.api.common.functions.GroupReduceFunction;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
-import org.apache.flink.api.java.functions.KeySelector;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.tuple.Tuple4;
 import org.apache.flink.api.java.tuple.Tuple8;
@@ -41,17 +40,17 @@ public class Flinkmancer {
         final int outcores;
         final String outpath;
         final String path;
+
         try {
             final ParameterTool params = ParameterTool.fromArgs(args);
             cores = params.getInt("cores");
             path = params.get("path");
             outpath = params.has("outpath") ? params.get("outpath") : "src/data/results/BIGfeatures.csv";
             outcores = params.has("outcores") ? params.getInt("outcores") : cores;
-
             env.setParallelism(cores); // xwris den trexei logo heap size p moirazontai ta task. dn exw to flink-conf.yaml
         } catch (Exception e) {
             System.err.println("No cores specified. Please run 'flinkmancer*.jar "
-                    + "--cores <cores> --path <path> ', where cores is the number of parallelism "
+                    + "--cores <cores> --path <path> --outcores <outcores> --outpath<outpath> ', where cores is the number of parallelism "
                     + "and path is path/to/file/ ");
             return;
         }
@@ -129,45 +128,27 @@ public class Flinkmancer {
        // System.out.println("All quote set");
         DataSet<Tuple2<Long, Tuple2<Set<Long>, Set<Long>>>> all_quote = inc_quote.fullOuterJoin(out_quote).where("f0").equalTo("f0").with(new OuterJoin());
         //all_quote.print();
+
         DataSet<Tuple2<Long, Tuple4<Set<Long>, Set<Long>, Set<Long>, Set<Long>>>> followXreply = all_follow.fullOuterJoin(all_reply).where("f0").equalTo("f0").with(new OuterJoinTuple4());
-        //followXreply.print();
-
         DataSet<Tuple2<Long, Tuple4<Set<Long>, Set<Long>, Set<Long>, Set<Long>>>> retweetXquote = all_retweet.fullOuterJoin(all_quote).where("f0").equalTo("f0").with(new OuterJoinTuple4());
-        //retweetXquote.print();
-
         DataSet<Tuple2<Long, Tuple8<Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>>>> all = followXreply.fullOuterJoin(retweetXquote).where("f0").equalTo("f0").with(new OuterJoinTuple8());
-        //System.out.println("All sets");
-        //all.print();
         DataSet<Node> vertices = all.groupBy(0).reduceGroup(new NodeCreator());
-        //vertices.print();
-        //crossed vertices
+
+
+
         DataSet<Tuple2<Node, Node>> Vpairs = vertices.cross(vertices);  //takes more than 15 mins.
         //Vpairs.print();
-        int layer = 1; //Follow layer is 1 , Reply is 2, Retweet is 3, Quote is 4
 
-        // TO DO!!!  , return Tuple with ids, no reason to return nodes.
+
         DataSet<Tuple2<String, String>> features = Vpairs.flatMap(new Features.Feat());
+
         features.writeAsCsv(outpath, "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(outcores);
         env.execute();
 
+
+
     }
 
-    public static class SelectId implements KeySelector<Node, String> {
-
-        @Override
-        public String getKey(Node w) {
-            return w.getId().toString();
-        }
-    }
-    public static class PointWeighter
-            implements FlatJoinFunction<Tuple2<Tuple2<Node, Node>, Integer>, Tuple2<Tuple2<Node, Node>, Integer>, Tuple2<Tuple2<Node, Node>, Tuple2<Integer, Integer>>> {
-
-        @Override
-        public void join(Tuple2<Tuple2<Node, Node>, Integer> t1, Tuple2<Tuple2<Node, Node>, Integer> t2, Collector<Tuple2<Tuple2<Node, Node>, Tuple2<Integer, Integer>>> out) {
-
-            out.collect(new Tuple2<>(t1.f0, new Tuple2<>(t1.f1, t2.f1)));
-        }
-    }
 
     public static class GroupReduceFirst
             implements GroupReduceFunction<Tuple2<Long, Long>, Tuple2<Long, Set<Long>>> {
@@ -264,6 +245,7 @@ public class Flinkmancer {
             }
         }
     }
+
 
     public static class OuterJoinTuple4
             implements FlatJoinFunction<Tuple2<Long, Tuple2<Set<Long>, Set<Long>>>, Tuple2<Long, Tuple2<Set<Long>, Set<Long>>>, Tuple2<Long, Tuple4<Set<Long>, Set<Long>, Set<Long>, Set<Long>>>> {
