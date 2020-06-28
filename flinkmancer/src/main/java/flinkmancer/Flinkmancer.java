@@ -141,7 +141,6 @@ public class Flinkmancer {
 
 
         DataSet<Tuple2<String, String>> features = Vpairs.flatMap(new Features.Feat());
-
         features.writeAsCsv(outpath, "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(outcores);
         env.execute();
 
