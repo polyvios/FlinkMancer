@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.flink.api.common.functions.FlatJoinFunction;
+import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.GroupReduceFunction;
 import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.ExecutionEnvironment;
@@ -141,13 +142,28 @@ public class Flinkmancer {
 
 
         DataSet<Tuple2<String, String>> features = Vpairs.flatMap(new Features.Feat());
-        features.writeAsCsv(outpath, "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(outcores);
+        DataSet<Tuple2<Integer, Integer>> redres = features.flatMap(new ReduceSize());
+        redres.writeAsCsv(outpath, "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(outcores);
+        //features.writeAsCsv(outpath, "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(outcores);
         env.execute();
 
 
 
     }
+    public static class ReduceSize implements FlatMapFunction<Tuple2<String, String>, Tuple2<Integer, Integer>> {
 
+        static int counter;
+
+        @Override
+        public void flatMap(Tuple2<String, String> in, Collector<Tuple2<Integer, Integer>> out) {
+            String s1 = in.f0;
+            String s2 = in.f1;
+            counter++;
+
+            out.collect(new Tuple2<>(counter, (s1.length() + s2.length())));
+
+        }
+    }
 
     public static class GroupReduceFirst
             implements GroupReduceFunction<Tuple2<Long, Long>, Tuple2<Long, Set<Long>>> {
