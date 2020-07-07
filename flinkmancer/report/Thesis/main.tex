@@ -1,0 +1,107 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% A template for PhD Thesis
+% Systems Security Group
+% Coventry University
+% 2020
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[12pt,oneside]{book}
+\usepackage[margin=1.2in]{geometry}
+\usepackage[toc,page]{appendix}
+\usepackage{graphicx}
+\usepackage[square,numbers]{natbib}
+\usepackage{lipsum}
+\usepackage{caption}
+\usepackage{pdfpages}
+\usepackage{etoolbox}
+\usepackage{setspace}
+\AtBeginEnvironment{quote}{\singlespacing\small}
+\begin{document}
+
+\captionsetup[figure]{margin=1.5cm,font=small,labelfont={bf},name={Figure},labelsep=colon,textfont={it}}
+\captionsetup[table]{margin=1.5cm,font=small,labelfont={bf},name={Table},labelsep=colon,textfont={it}}
+\SetLipsumDefault{1}
+
+\frontmatter
+
+\begin{titlepage}
+
+
+% -------------------------------------------------------------------
+% You need to edit the details here
+% -------------------------------------------------------------------
+
+\begin{center}
+{\LARGE University Of Crete}\\[0.25cm]
+{\Large Department of Computer Science}\\[1.5cm]
+\linespread{1.2}\huge {\bfseries Feature Extraction for Multi-layer Graph Link Prediction}\\[1.5cm]
+\linespread{1}
+\includegraphics[width=6.5cm]{Thesis/images/UoC_logo.png}\\[1.5cm]
+{\Large\bf  Dimitrios Andreas Vogiatzidakis}\\[1cm]
+{\large \emph{Supervisor:}   Polyvios Pratikakis}\\[0.25cm]% if applicable
+\vspace{\fill}
+\large A thesis submitted in partial fulfilment of the University's requirements\\ for the degree of Bachelor of Science\\[1cm]
+\today
+\end{center}
+
+\end{titlepage}
+
+
+% -------------------------------------------------------------------
+% Declaration
+% -------------------------------------------------------------------
+
+
+% \includepdf[pages=-]{forms/form.pdf}
+
+%\input{sections/0_i_ack.tex}
+
+% -------------------------------------------------------------------
+% Abstract
+% -------------------------------------------------------------------
+
+\input{sections/0_ii_abstract.tex}
+
+% -------------------------------------------------------------------
+% Contents, list of figures, list of tables
+% -------------------------------------------------------------------
+
+\tableofcontents
+\listoffigures
+
+%\listoftables
+
+
+% -------------------------------------------------------------------
+% Main sections (as required)
+% -------------------------------------------------------------------
+
+\mainmatter
+
+\input{sections/1_introduction.tex}
+\input{sections/2_background.tex}
+\input{sections/3_methodology.tex}
+\input{sections/4_results.tex}
+%\input{sections/5_discussion.tex}
+\input{sections/6_conclusion.tex}
+
+
+% -------------------------------------------------------------------
+% Bibliography
+% -------------------------------------------------------------------
+
+\bibliographystyle{plainnat}
+\bibliography{main} 
+[1] K. Sotiropoulos, J. W. Byers, P. Pratikakis, and C. E. Tsourakakis. Twittermancer: Predictinginteractions on twitter accurately.arXiv preprint arXiv:1904.11119, 2019.\newline
+[2] DiGangi EA, Moore MK, editors. 2012. Research methods inhuman skeletal biology. Oxford: Academic Press.
+% -------------------------------------------------------------------
+% Appendices
+% -------------------------------------------------------------------
+
+%\begin{appendices}
+%\input{sections/appendixA.tex}
+%\input{sections/appendixB.tex}
+%\end{appendices}
+
+\end{document}

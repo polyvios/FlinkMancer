@@ -1,0 +1,4 @@
+\chapter{Conclusions and Future Work}
+In conclusion we found out that the immediate process of the features extracted is required, because of the limitation we had in disk space. Since the project creates a cross product, the output size has quadratic growth. So in our tests we run quickly out of space as the increased the input size. If in the future the Machine learning library is reimplemented in Apache Flink, then we could do our computation inside the same framework. 
+
+One suggestion we have for future work is to use Apache Kafka or some alternative as a data sink and redirect the features to an Apache Spark project that could perform the logistic regression. 

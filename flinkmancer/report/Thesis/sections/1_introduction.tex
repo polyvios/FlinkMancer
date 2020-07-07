@@ -1,0 +1,22 @@
+\chapter{Introduction}
+
+
+Traditionally, programs have been written for serial computation. That means a single problem is broken into smaller instructions, those instructions are executed sequentailly, one at a time. Parallel computation is in the simplest way, the simultaneous execution of these instructions to compute the problem. It was introduced as way to model scientific problems, such as meteorology. This led to the design of parallel hardware and software which allowed the use of larger datasets. In this thesis we are trying to replicate the work of Twittermancer[1] using parallel computation. This will allow us to use larger datasets and maybe improve the accuracy of the results.
+Our goal is to create a fast and reliable way to extract features out of a given dataset.
+
+
+
+\section{Challenges}
+
+
+One of our main concerns was regarding the DRAM as our algorithm will produce a cross-product of N nodes, that will later be used to extract the features. Luckily, Flink is implemented in a way to make full use of the available memory without ever exceeding it and causing errors. 
+
+The original goal was to use the extracted features and perform a logistic regression. However after version 1.8 Apache Flink no longer supports the Machine Learning library and is currently in early stages of being reimplemented. Our solution was to extract the features, and create a new dataset containing those features, that could be used by another program to perfome the Logistic Regression. This created another issue with our filesystem memory as the output of our algorithm is a .csv document containing all features for each pair of nodes(edge). Thus we have a file of "N*N*Number of Features" records taking a lot of space on our hard drives. We partially solved this for testing purposes using datasets that will output the maximum available size and not more.
+
+%\subsection{A subsection}
+
+ % replace with your text
+
+%\subsection{Another subsection}
+
+ % replace with your text
