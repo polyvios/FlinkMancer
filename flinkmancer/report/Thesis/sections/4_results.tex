@@ -1,6 +1,6 @@
 \chapter{Results}
 
-We performed our test runs on a standalone cluster, consisting of 4 nodes, with 32 cores each. We configured the Apache Flink framework until we found the configuration that provided the best performance. Once we hit our limitation of hard disk size, we created an alternative method to measure the time of feature extraction. This alllows to have an idea of the actual time the feature extraction requires without the increased delay of writing to a hard disk.
+We performed our test runs on a standalone cluster, consisting of 4 nodes, with 32 cores each. We configured the Apache Flink framework until we found the configuration that provided the best performance. Once we hit our limitation of hard disk size, we created an alternative method to measure the time of feature extraction. This allows to have an idea of the actual time the feature extraction requires without the increased delay of writing to a hard disk.
 
 
 \section{CSV File Method}
@@ -14,7 +14,7 @@ Figure 4.1 one shows the average execution time as the input increases, while ke
 \end{figure}
 
 
-The other objective we had was regarding strong scaling. We measured the speedup we can achieve given a fixed size input, by increasing our resources. Figure 4.2 shows the execution times on a specific dataset, when we increase the cores from 32 to 128.
+The other objective we had was regarding strong scaling. We measured the speedup we can achieve given a fixed size input, by increasing our resources. Figure 4.2 shows the execution times on a specific data set, when we increase the cores from 32 to 128.
 
 \begin{figure}[ht]
 \includegraphics[width=12cm]{Thesis/figures/figure2.JPG}
@@ -37,7 +37,7 @@ Finally we show at figure 4.4 that we were able to increase the unique ids used 
 
 \begin{figure}[ht]
 \includegraphics[width=10cm]{Thesis/figures/figure5.JPG}
-\caption{Input data scaling}
+\caption{Input data scaling.}
 \label{fig:graph}
 \end{figure}
 
