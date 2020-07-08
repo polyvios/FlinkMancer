@@ -55,7 +55,7 @@ We transformed this Dataset of Tuples into Dataset of "Nodes". Node is a POJO wi
 
 We create a cross product of this dataset with itself. This will create every possible edge given our known ids. The result was a Dataset of (Node,Node) . We applied function Feat() to each pair of nodes using flatMap , and got the result containing all features. The Feat() function creates an Array where it stores every feature. It later creates a string of comma-separated values that starts with the Id of U - V and continues with the features.  The algorithm of selecting features is explained in detail here[1] and here[3]. 
 
-In our tests we have a total of 100 features for each Edge, so we produce an output of 102 numbers (2 node ides and 100 features). The diagram of our project is shown in Figure 1.
+In our tests we have a total of 100 features for each Edge, so we produce an output of 102 numbers (2 node ides and 100 features). The diagram of our project is shown in Figure 3.1.
 
 The alternative method we used to reduce the output size, essentially takes the result of Feat() and calculates the lenght of each line. The new output is irrelevant but it allows to lower the size by a factor of 100 since we now have only 2 Long per line instead of 102.
 
