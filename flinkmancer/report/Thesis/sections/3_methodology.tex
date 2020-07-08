@@ -42,18 +42,23 @@ After the program is executed , it produces a Features.csv file, containing 100 
 
 
 \section{Design}
-We wanted to create a dataset of every node paired with a list of every neighbor for every layer examined in the process. We achieved that, by reading each layers data, creating 2 adjacent lists for every layer, one for incoming neighbors and one for outgoing. Then we used outer join to combine them and have an 'empty' slot for every missing link.
+We wanted to create a Dataset of every node paired with a list of every neighbor for every layer examined in the process. We achieved that, by reading each layer's data, creating 2 adjacent lists for every layer, one for incoming neighbors and one for outgoing. Then we used outer join to combine them and have an 'empty' slot for every missing link. The reason to go for full outer join is we want to keep any neighbor and not only the common neighbors at incoming and outgoing.
 
-For example: Imagine we had Node 1 , with incoming nodes 2,3 and outgoing 3,4. What outer join does for us is that our result is a Tuple of 2 lists ([2,3,[]],[[],3,4]) instead of ([2,3][3,4]).
+For example: Imagine we have Node 1 , with incoming Nodes 2,3 and outgoing 3,4. What outer join does for us is that our result is a Tuple of 2 lists ([2,3,[]],[[],3,4]) instead of ([3][3]).
 
-We use the same technique for every Tuple we created on the previous step and we combine them in a final Tuple of 8 lists (4 layers in this process).  Now we have a Dataset containting a Tuple of (Id,Tuple8(list of neighbors for each layer)). 
+We use the same technique for every Tuple we created on the previous step and we combine them in a final Tuple of 8 lists (4 layers in this process).  Now we have a Dataset containting a Tuple of (Id,Tuple8(8 lists of neighbors, 2 for each layer)). 
+We transformed this Dataset of Tuples into Dataset of "Nodes". Node is a POJO with 2 variables: 
+\begin{itemize}
+    \item Long Id
+    \item ArrayList \textless Set\textless Long\textgreater \textgreater  Sets
+\end{itemize}
 
-Now we create a cross product of this dataset with itself. This will create every possible edge given our known ids. For each of these edges, we are going to extract the features we need. We take each edge and perform and intersection on every neighbor list to find their common neighbors and count them. Those features are explained in details in the TwitterMancer[1] paper. 
+We create a cross product of this dataset with itself. This will create every possible edge given our known ids. The result was a Dataset of (Node,Node) . We applied function Feat() to each pair of nodes using flatMap , and got the result containing all features. The Feat() function creates an Array where it stores every feature. It later creates a string of comma-separated values that starts with the Id of U - V and continues with the features.  The algorithm of selecting features is explained in detail here[1] and here[3]. 
 
-In our tests we have a total of 100 features for each Edge, so we produce an output of 102 numbers (2 node ides and 100 features) for each Edge in the cross product we created.
+In our tests we have a total of 100 features for each Edge, so we produce an output of 102 numbers (2 node ides and 100 features). The diagram of our project is shown in Figure 1.
 
+The alternative method we used to reduce the output size, essentially takes the result of Feat() and calculates the lenght of each line. The new output is irrelevant but it allows to lower the size by a factor of 100 since we now have only 2 Long per line instead of 102.
 
-The diagram of our project is shown in Figure 1.
 
 
 \section{Implementation}
