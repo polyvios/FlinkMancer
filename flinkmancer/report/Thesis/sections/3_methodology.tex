@@ -72,7 +72,7 @@ It contains 3 .java files:
 \item Node.java
 \end{itemize}
 
-Flinkmancer.java is main class of the project.It sets up the flink environment, reads the data input for each layer and creates the adjacent lists of neighbors which then combines using outer join function. These lists are transformed into Nodes. Those nodes are then used to create a cross product with themselves. using .cross function provided by flink, and stored in a Dataset. we apply a Feat() function to every edge in our cross product and we receive a final Tuple of 2, (ids,features). \newline
+Flinkmancer.java is main class of the project. It sets up the flink environment, reads the data input for each layer and creates the adjacent lists of neighbors which then combines using outer join function. These lists are transformed into Nodes. Those nodes are then used to create a cross product with themselves. using .cross function provided by flink, and stored in a Dataset. we apply a Feat() function to every edge in our cross product and we receive a final Tuple of 2, (ids,features). \newline
 
 Node.java is simply the class that implements the Node objects, and contains ways to access each object variables such us setId(), getId(), getSets() as well as the class constructors. \newline
 

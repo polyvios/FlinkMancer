@@ -143,13 +143,15 @@ public class Flinkmancer {
 
         DataSet<Tuple2<String, String>> features = Vpairs.flatMap(new Features.Feat());
         DataSet<Tuple2<Integer, Integer>> redres = features.flatMap(new ReduceSize());
-        redres.writeAsCsv(outpath, "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(outcores);
-        //features.writeAsCsv(outpath, "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(outcores);
+        redres.writeAsCsv(outpath, "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(outcores); //comment this for reduced output
+        //features.writeAsCsv(outpath, "\n", ",", FileSystem.WriteMode.OVERWRITE).setParallelism(outcores); //uncomment this for reduced output
         env.execute();
 
 
 
     }
+
+    //helper function to reduce the ouput
     public static class ReduceSize implements FlatMapFunction<Tuple2<String, String>, Tuple2<Integer, Integer>> {
 
         static int counter;
@@ -164,7 +166,9 @@ public class Flinkmancer {
 
         }
     }
-
+    /*
+    * used in reduceGroup. groups by first
+     */
     public static class GroupReduceFirst
             implements GroupReduceFunction<Tuple2<Long, Long>, Tuple2<Long, Set<Long>>> {
 
@@ -206,7 +210,9 @@ public class Flinkmancer {
 
         }
     }
-
+    /*
+       *    Transform to Node
+     */
     public static class NodeCreator
             implements GroupReduceFunction<Tuple2<Long, Tuple8<Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>>>, Node> {
 
@@ -236,7 +242,9 @@ public class Flinkmancer {
         }
     }
 
-
+    /*
+    * OuterJoin for Single sets
+     */
     public static class OuterJoin
             implements FlatJoinFunction<Tuple2<Long, Set<Long>>, Tuple2<Long, Set<Long>>, Tuple2<Long, Tuple2<Set<Long>, Set<Long>>>> {
 
@@ -261,7 +269,9 @@ public class Flinkmancer {
         }
     }
 
-
+    /*
+    * OuterJoin for 4 Sets
+     */
     public static class OuterJoinTuple4
             implements FlatJoinFunction<Tuple2<Long, Tuple2<Set<Long>, Set<Long>>>, Tuple2<Long, Tuple2<Set<Long>, Set<Long>>>, Tuple2<Long, Tuple4<Set<Long>, Set<Long>, Set<Long>, Set<Long>>>> {
 
@@ -293,7 +303,9 @@ public class Flinkmancer {
 
         }
     }
-
+    /*
+    * Outerjoin for 8 sets
+     */
     public static class OuterJoinTuple8
             implements FlatJoinFunction<Tuple2<Long, Tuple4<Set<Long>, Set<Long>, Set<Long>, Set<Long>>>, Tuple2<Long, Tuple4<Set<Long>, Set<Long>, Set<Long>, Set<Long>>>, Tuple2<Long, Tuple8<Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>, Set<Long>>>> {
 
