@@ -10,9 +10,9 @@ The project was created using Java and Apache-Flink. We build the project using 
 
 
 \section{Feature Extraction}
-In machine learning, input data is usually too large to be processed and requires to be transformed into a reduced set of features. Those features are supposed to be informative and non-redundant while also allowing better human interpretations. Deciding on which features are going to be used is called feature selection and the whole process is called feature Extraction. The way we extracted features in this work is explained in detail in "Predicting positive and negative links in online social networks"[3] 
+In machine learning, input data is usually too large to be processed and requires to be transformed into a reduced set of features. Those features are supposed to be informative and non-redundant while also allowing better human interpretations. The process of deciding which Features are going to be used is called feature selection and the whole process is called feature Extraction. The way we extracted features in this work is explained in detail in ``Predicting positive and negative links in online social networks"[3] 
 \section{Logistic Regression}
-Logistic regression (LR) is a statistical method which finds an equation that predicts an outcome for a binary variable, Y, from one or more response variables, X. The variables can be categorical or continuous. It assumes independence among variables, although the applicability of the method often trumps statistical assumptions. One drawback of LR is that the method cannot produce typicality probabilities. A more detailed approach can be found in "Research methods in human skeletal biology"[2]
+Logistic regression (LR) is a statistical method which finds an equation that predicts an outcome for a binary variable, Y, from one or more response variables, X. The variables can be categorical or continuous. It assumes independence among variables, although the applicability of the method often trumps statistical assumptions. One drawback of LR is that the method cannot produce typicality probabilities. A more detailed approach can be found in ``Research methods in human skeletal biology"[2]
 
 \section{Apache Flink}
 
@@ -25,7 +25,7 @@ Apache Flink is a framework designed to run in cluster environments and perform 
     Processing of bounded streams is also known as batch processing.
     \end{description}
     
-When deploying an application, Flink identifies the required resources requests them from the resource manager. In case of a failure, Flink replaces the failed container by requesting new resources. 
+When deploying an application, Flink identifies the required resources and requests them from the resource manager. In case of a failure, Flink replaces the failed container by requesting new resources. 
 
 Flink maintains a very large application state. It has an asynchronous and incremental check-pointing algorithm which ensures minimal impact on processing latency. 
 This guarantees exactly-once state consistency
